@@ -1,25 +1,23 @@
-import logo from './logo.svg';
-import './App.css';
+// 創建外殼組件App
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+// 引入React 核心庫
+import React, { Component } from 'react';
+// 引入Hello組件
+import Hello from './componets/Hello/Hello.js';
+// 引入Welcome組件
+import Welcome from './componets/Welcome/Welcome.js';
+
+
+class App extends Component {
+    state = {  }
+    render() {
+        return (
+            <div>
+               <Hello/>
+               <Welcome/>
+            </div>
+        );
+    }
 }
 
 export default App;
