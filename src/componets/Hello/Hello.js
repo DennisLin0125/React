@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 
-import "./Hello.css"
+import hello from"./Hello.module.css"
 
 class Hello extends Component {
     state = {  }
     render() {
         return (
-            <h2 className='title'>Hello,React</h2>
+            <h2 className={hello.title}>Hello,React</h2>
         );
     }
 }
