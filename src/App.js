@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 
 import axios from 'axios'
 
-// 配置defaul url
-axios.defaults.baseURL = "http://localhost:5000"
+// 配置defaul url  因為代理伺服器的port為React的3000故URL改為3000
+axios.defaults.baseURL = "http://localhost:3000"
 
 export default class App extends Component {
   
@@ -14,7 +14,7 @@ export default class App extends Component {
         url: "/students",
 
     }).then(res => {
-        console.log("請求成功:",res);
+        console.log("請求成功:",res.data);
     }).catch((reason)=>{
         console.error("失敗了:",reason);
     })
