@@ -32,3 +32,10 @@ li {
   li:last-child {
     border-bottom: none;
   }
+
+  /* .todo-item:hover {
+    background-color: lightgray;
+   }
+   .todo-item:hover .btn-danger{
+    display: block !important;
+   } */
