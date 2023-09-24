@@ -41,6 +41,18 @@ export default class App extends Component {
     this.setState({todos: newTodos});
   }
 
+  // 刪除todo
+  deleteTodo = (id) => {
+    // 獲取狀態中的todos
+    const {todos} = this.state;
+    // 刪除指定id的todo對象
+    const newTodos = todos.filter((todoObj)=>{
+      return todoObj.id !== id;
+    });
+    // 更新狀態
+    this.setState({todos: newTodos});
+  }
+
   render() {
     const {todos} = this.state;
 
@@ -48,7 +60,7 @@ export default class App extends Component {
       <div className="todo-container">
         <div className="todo-wrap">
           <Header addTodo={this.addTodo}/>
-          <List todos={todos} updateTodo={this.updateTodo}/>
+          <List todos={todos} updateTodo={this.updateTodo} deleteTodo={this.deleteTodo}/>
           <Footer/>
         </div>
       </div>
