@@ -26,6 +26,21 @@ export default class App extends Component {
     this.setState({todos: newTodos});
   }
 
+  // 用於更新是否點擊checkbox的狀態
+  updateTodo = (id, done) => {
+    // 獲取狀態中的todos
+    const {todos} = this.state;
+    // 匹配處理數據
+    const newTodos = todos.map((todoObj) => {
+      if (todoObj.id === id) {
+        return {...todoObj, done:done}
+      }else{
+        return todoObj;
+      }
+    });
+    this.setState({todos: newTodos});
+  }
+
   render() {
     const {todos} = this.state;
 
@@ -33,7 +48,7 @@ export default class App extends Component {
       <div className="todo-container">
         <div className="todo-wrap">
           <Header addTodo={this.addTodo}/>
-          <List todos={todos}/>
+          <List todos={todos} updateTodo={this.updateTodo}/>
           <Footer/>
         </div>
       </div>
