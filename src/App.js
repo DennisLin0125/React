@@ -19,10 +19,26 @@ export default class App extends Component {
         console.error("失敗了:",reason);
     })
   }
+
+  getCarData = () => {
+    axios({
+        method: "GET",
+        //url
+        url: "/cars",
+
+    }).then(res => {
+        console.log("請求成功:",res.data);
+    }).catch((reason)=>{
+        console.error("失敗了:",reason);
+    });
+  }
+    
+
   render() {
     return (
       <div>
         <button onClick={this.getStudentData}>點擊獲取學生訊息</button>
+        <button onClick={this.getCarData}>點擊獲取汽車訊息</button>
       </div>
     )
   }
