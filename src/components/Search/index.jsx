@@ -6,13 +6,31 @@ export default class Search extends Component {
   handleSearch = () => {
     // 獲取用戶輸入,並改名為keyWord
     const {keyWordElement:{value:keyWord}} = this;
+    
+    if(keyWord.trim() === ""){
+      alert("Please input something to search...");
+      return;
+    }
+    // 發送請求前通知App更新狀態
+    this.props.updateAppState({
+      isFirst: false,
+      isLoading: true
+    })
     // 發送網路請求  發送給代理伺服器
     axios.get(`/api1/search/users?q=${keyWord}`)
     .then((respones) => {
-      this.props.saveUsers(respones.data.items)
+      // 請求成功後通知App更新狀態
+      this.props.updateAppState({
+        isLoading: false,
+        users:respones.data.items
+      })
     })
     .catch((err) => {
-      console.log('err:', err)
+      // 請求失敗後通知App更新狀態
+      this.props.updateAppState({
+        isLoading: false,
+        errMsg:err.message
+      })
     })
   }
 
