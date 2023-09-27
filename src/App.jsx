@@ -1,9 +1,11 @@
 import React from 'react'
-import {NavLink,Routes,Route} from 'react-router-dom'
-import About from './pages/About'
-import Home from './pages/Home'
+import { NavLink, useRoutes } from 'react-router-dom'
+
+import routers from './routers'
 
 export default function App() {
+  // 根據路由表生成對應的路由
+  const elements = useRoutes(routers)
   return (
     <div>
       <div className="row">
@@ -23,10 +25,7 @@ export default function App() {
           <div className="panel">
             <div className="panel-body">
               {/* 註冊路由 */}
-              <Routes>
-                <Route path='/about' element={<About/>}/>
-                <Route path='/Home' element={<Home/>}/>
-              </Routes>
+              {elements}
             </div>
           </div>
         </div>
