@@ -1,12 +1,11 @@
 import React from 'react'
-import {NavLink,Routes,Route,Navigate} from 'react-router-dom'
-import About from './pages/About'
-import Home from './pages/Home'
+import {NavLink, useRoutes} from 'react-router-dom'
+import routers from './routers'
 
 export default function App() {
-  function computeClassName({isActive}){
-    return isActive ? "list-group-item selected" : "list-group-item"
-  }
+  // 根據路由表生成對應的路由
+  const elements = useRoutes(routers)
+
   return (
     <div>
       <div className="row">
@@ -18,19 +17,15 @@ export default function App() {
         <div className="col-xs-2 col-xs-offset-2">
           <div className="list-group">
             {/* 路由鏈接 */}
-            <NavLink className={computeClassName} to="/about">About</NavLink>
-            <NavLink className={computeClassName} to="/home">Home</NavLink>
+            <NavLink className="list-group-item" to="/about">About</NavLink>
+            <NavLink className="list-group-item" to="/home">Home</NavLink>
           </div>
         </div>
         <div className="col-xs-6">
           <div className="panel">
             <div className="panel-body">
               {/* 註冊路由 */}
-              <Routes>
-                <Route path='/about' element={<About/>}/>
-                <Route path='/Home' element={<Home/>}/>
-                <Route path='/' element={<Navigate to="/about"/>}/>
-              </Routes>
+              {elements}
             </div>
           </div>
         </div>
