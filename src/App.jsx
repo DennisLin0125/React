@@ -2,6 +2,7 @@ import React from 'react'
 import { NavLink, useRoutes } from 'react-router-dom'
 
 import routers from './routers'
+import Header from './componets/Header'
 
 export default function App() {
   // 根據路由表生成對應的路由
@@ -9,9 +10,7 @@ export default function App() {
   return (
     <div>
       <div className="row">
-        <div className="col-xs-offset-2 col-xs-8">
-          <div className="page-header"><h2>React Router Demo</h2></div>
-        </div>
+        <Header/>
       </div>
       <div className="row">
         <div className="col-xs-2 col-xs-offset-2">
