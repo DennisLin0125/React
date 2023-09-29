@@ -1,19 +1,15 @@
 import React from 'react'
-import { useSearchParams,useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
+
 
 
 export default function Detail() {
-    const [search,setSearch] = useSearchParams();
-    const a = useLocation();
-    console.log(a)
+    const {state:{id,title,content}} = useLocation();
     return (
         <ul>
-            <li>
-                <button onClick={() => setSearch("id=008&title=哈哈&content=嘻嘻")}>點擊更新收到的search參數</button>
-            </li>
-            <li>編號:{search.get('id')}</li>
-            <li>標題:{search.get('title')}</li>
-            <li>內容:{search.get('content')}</li>
+            <li>編號:{id}</li>
+            <li>標題:{title}</li>
+            <li>內容:{content}</li>
         </ul>
     )
 }
