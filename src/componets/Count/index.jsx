@@ -1,53 +1,52 @@
 import React, { Component } from 'react'
+import store from '../../redux/store'
 
 export default class Count extends Component {
 
-    state = { count: 0 }
+    state = { carName: "BMW" }
+
+    // componentDidMount() {
+    //     // 監測redux中的狀態變化,只要變化,就調用render
+    //     store.subscribe(() => {
+    //         this.setState({});
+    //     })
+    // }
 
     // 加法
     increment = () => {
         // 獲取用戶輸入
         const { value } = this.selectNumber;
-        // 獲取原來狀態值
-        const { count } = this.state;
-        // *1 為了強制將字串轉數字
-        this.setState({ count: count + value * 1 })
+        store.dispatch({ type: 'increment', data: value * 1 })
     }
     // 減法
     decrement = () => {
         // 獲取用戶輸入
         const { value } = this.selectNumber;
-        // 獲取原來狀態值
-        const { count } = this.state;
-        // *1 為了強制將字串轉數字
-        this.setState({ count: count - value * 1 })
+        store.dispatch({ type: 'decrement', data: value * 1 })
     }
     // 當前求和為奇數再加
     incrementIfOdd = () => {
         // 獲取用戶輸入
         const { value } = this.selectNumber;
-        // 獲取原來狀態值
-        const { count } = this.state;
-        if (count % 2 === 1) {
+
+        if (store.getState().count % 2 === 1) {
             // *1 為了強制將字串轉數字
-            this.setState({ count: count + value * 1 })
+            store.dispatch({ type: 'increment', data: value * 1 })
         }
     }
     // 異步加
     incrementAsync = () => {
         // 獲取用戶輸入
         const { value } = this.selectNumber;
-        // 獲取原來狀態值
-        const { count } = this.state;
         setTimeout(() => {
             // *1 為了強制將字串轉數字
-            this.setState({ count: count + value * 1 })
+            store.dispatch({ type: 'increment', data: value * 1 })
         }, 500);
     }
     render() {
         return (
             <div>
-                <h1>當前求和為: {this.state.count}</h1>
+                <h1>當前求和為: {store.getState().count}</h1>
                 <select ref={c => this.selectNumber = c}>
                     <option value="1">1</option>
                     <option value="2">2</option>
