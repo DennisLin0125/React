@@ -1,5 +1,5 @@
 import React from 'react'
-import { NavLink, useRoutes } from 'react-router-dom'
+import { NavLink, useRoutes,useInRouterContext } from 'react-router-dom'
 
 import routers from './routers'
 import Header from './componets/Header'
@@ -7,6 +7,7 @@ import Header from './componets/Header'
 export default function App() {
   // 根據路由表生成對應的路由
   const elements = useRoutes(routers)
+  console.log('useInRouterContext', useInRouterContext())
   return (
     <div>
       <div className="row">
