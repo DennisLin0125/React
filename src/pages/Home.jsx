@@ -8,7 +8,7 @@ export default function Home() {
       <div>
         <ul className="nav nav-tabs">
           <li>
-            <NavLink className="list-group-item" to="news">News</NavLink>
+            <NavLink className="list-group-item" replace to="news">News</NavLink>
           </li>
           <li>
             <NavLink className="list-group-item" to="message">Message</NavLink>

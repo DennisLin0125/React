@@ -1,6 +1,8 @@
 import React from 'react'
+import { useNavigationType } from 'react-router-dom'
 
 export default function News() {
+    console.log('useNavigationType', useNavigationType())
     return (
         <ul>
             <li>news001</li>
