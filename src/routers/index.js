@@ -25,7 +25,7 @@ const routes = [
                 element: <Message />,
                 children: [
                     {
-                        path: 'detial/:id/:title/:content',
+                        path: 'detial',
                         element: <Detail />,
                     }
                 ]
