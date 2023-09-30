@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import store from '../../redux/store'
 
+// 引入action
+import { createIncrementAction, createDecrementAction } from '../../redux/count_action'
+
 export default class Count extends Component {
 
     state = { carName: "BMW" }
@@ -16,13 +19,13 @@ export default class Count extends Component {
     increment = () => {
         // 獲取用戶輸入
         const { value } = this.selectNumber;
-        store.dispatch({ type: 'increment', data: value * 1 })
+        store.dispatch(createIncrementAction(value * 1))
     }
     // 減法
     decrement = () => {
         // 獲取用戶輸入
         const { value } = this.selectNumber;
-        store.dispatch({ type: 'decrement', data: value * 1 })
+        store.dispatch(createDecrementAction(value * 1))
     }
     // 當前求和為奇數再加
     incrementIfOdd = () => {
@@ -31,7 +34,7 @@ export default class Count extends Component {
 
         if (store.getState().count % 2 === 1) {
             // *1 為了強制將字串轉數字
-            store.dispatch({ type: 'increment', data: value * 1 })
+            store.dispatch(createIncrementAction(value * 1))
         }
     }
     // 異步加
@@ -40,7 +43,7 @@ export default class Count extends Component {
         const { value } = this.selectNumber;
         setTimeout(() => {
             // *1 為了強制將字串轉數字
-            store.dispatch({ type: 'increment', data: value * 1 })
+            store.dispatch(createIncrementAction(value * 1))
         }, 500);
     }
     render() {
