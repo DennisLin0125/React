@@ -2,7 +2,11 @@ import React, { Component } from 'react'
 import store from '../../redux/store'
 
 // 引入action
-import { createIncrementAction, createDecrementAction } from '../../redux/count_action'
+import {
+    createIncrementAction,
+    createDecrementAction,
+    createIncrementAsyncAction
+} from '../../redux/count_action'
 
 export default class Count extends Component {
 
@@ -41,10 +45,12 @@ export default class Count extends Component {
     incrementAsync = () => {
         // 獲取用戶輸入
         const { value } = this.selectNumber;
-        setTimeout(() => {
-            // *1 為了強制將字串轉數字
-            store.dispatch(createIncrementAction(value * 1))
-        }, 500);
+        // setTimeout(() => {
+        //     // *1 為了強制將字串轉數字
+        //     store.dispatch(createIncrementAction(value * 1))
+        // }, 500);
+        store.dispatch(createIncrementAsyncAction(value * 1, 500))
+
     }
     render() {
         return (
