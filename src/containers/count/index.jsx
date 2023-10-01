@@ -4,7 +4,7 @@ import {
     createIncrementAction,
     createDecrementAction,
     createIncrementAsyncAction
-} from '../../redux/count_action'
+} from '../../redux/actions/count'
 
 import {connect} from 'react-redux'
 
@@ -44,7 +44,8 @@ class Count extends Component {
         console.log('UI:', this.props)
         return (
             <div>
-                <h1>當前求和為: {this.props.count}</h1>
+                <h2>我是Count組件</h2>
+                <h4>當前求和為: {this.props.count}</h4>
                 <select ref={c => this.selectNumber = c}>
                     <option value="1">1</option>
                     <option value="2">2</option>
