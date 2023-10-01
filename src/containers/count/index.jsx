@@ -9,17 +9,25 @@ import {
     createIncrementAsyncAction
 } from '../../redux/count_action'
 
-// mapStateToProbs函數的返回值作為狀態值傳給了UI組件
-const mapStateToProbs = (state) => ({ count: state.count })
 
-const mapDispatchToProbs = (dispatch) => (
+const CountContainer = connect(
+    // mapStateToProps
+    (state) => ({ count: state.count }),
+
+    // mapDispatchToProps的一般寫法
+    // (dispatch) => ({
+    //     add: (data) => dispatch(createIncrementAction(data)),
+    //     sub: (data) => dispatch(createDecrementAction(data)),
+    //     async: (data, time) => dispatch(createIncrementAsyncAction(data, time)),
+    // })
+
+    // mapDispatchToProps的精簡寫法
     {
-        add: (data) => dispatch(createIncrementAction(data)),
-        sub: (data) => dispatch(createDecrementAction(data)),
-        async: (data, time) => dispatch(createIncrementAsyncAction(data, time)),
+        add: createIncrementAction,
+        sub: createDecrementAction,
+        async: createIncrementAsyncAction
     }
-)
 
-const CountContainer = connect(mapStateToProbs, mapDispatchToProbs)(CountUI);
+)(CountUI);
 
 export default CountContainer;
