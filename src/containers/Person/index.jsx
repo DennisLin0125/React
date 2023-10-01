@@ -1,27 +1,45 @@
 import React, { Component } from 'react'
 import { nanoid } from 'nanoid'
+import { connect } from 'react-redux'
+import { createAddPersonAction } from '../../redux/actions/person'
 
-export default class Person extends Component {
+class Person extends Component {
 
     addPerson = () => {
         const name = this.nameNode.value;
         const age = this.ageNode.value;
         const personObj = { id: nanoid(), name, age }
-        console.log('personObj', personObj)
+        this.props.addPerson(personObj);
+        this.nameNode.value='';
+        this.ageNode.value='';
     }
     render() {
         return (
             <div>
-                <h2>我是Person組件</h2>
+                <h2>我是Person組件,上方組件總和: {this.props.sum}</h2>
                 <input ref={c => this.nameNode = c} type="text" placeholder='輸入名字' />
                 <input ref={c => this.ageNode = c} type="text" placeholder='輸入年齡' />
                 <button onClick={this.addPerson}>添加</button>
                 <ul>
-                    <li>名字1--年齡1--</li>
-                    <li>名字2--年齡2--</li>
-                    <li>名字3--年齡3--</li>
+                    {
+                        this.props.addP.map((person) => {
+                            return (
+                                <li key={person.id}>{person.name}--{person.age}</li>
+                            )
+                        })
+                    }
                 </ul>
             </div>
         )
     }
 }
+
+export default connect(
+    (state) => ({
+        addP: state.addP,
+        sum: state.count
+    }),
+    {
+        addPerson: createAddPersonAction
+    }
+)(Person)

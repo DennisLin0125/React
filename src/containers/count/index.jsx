@@ -6,7 +6,7 @@ import {
     createIncrementAsyncAction
 } from '../../redux/actions/count'
 
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 
 //  定義UI組件
 class Count extends Component {
@@ -41,10 +41,9 @@ class Count extends Component {
 
     }
     render() {
-        console.log('UI:', this.props)
         return (
             <div>
-                <h2>我是Count組件</h2>
+                <h2>我是Count組件,下方組件總人數: {this.props.tatlePerson}</h2>
                 <h4>當前求和為: {this.props.count}</h4>
                 <select ref={c => this.selectNumber = c}>
                     <option value="1">1</option>
@@ -63,7 +62,10 @@ class Count extends Component {
 
 const CountContainer = connect(
     // mapStateToProps
-    (state) => ({ count: state.count }),
+    (state) => ({
+        count: state.count,
+        tatlePerson:state.addP.length
+    }),
 
     // mapDispatchToProps的一般寫法
     // (dispatch) => ({
