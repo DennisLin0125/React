@@ -1,25 +1,53 @@
-# 求和案例_redux非同步action版
+# 求和案例_React-redux基本使用
 
-## 明確：延遲的動作不想交給組件自身，想交給action
+## 明確兩個概念：
 
-## 何時需要非同步action
+* UI元件:不能使用任何redux的api，只負責頁面的呈現、互動等。
+* 容器元件：負責和redux通信，將結果交給UI元件。
 
-* 想要對狀態進行操作，但是具體的資料靠非同步任務返回。
+## 如何建立一個容器元件 —— 靠react-redux 的 connect函數
 
-## 具體編碼
-
-* 創建action的函數不再傳回一般對象，而是一個函數，該函數中寫非同步任務。
-* 非同步任務有結果後，分發一個同步的action去真正操作資料。
+* connect(mapStateToProps,mapDispatchToProps)(UI元件)
 
 ```js
-// 所謂的異步Actoin就是回傳為function
-export const createIncrementAsyncAction = (data,time) => { 
-    return (dispatch) => {
-        setTimeout(() => {
-            dispatch(createIncrementAction(data))
-        },time)
+const CountContainer = connect(mapStateToProbs, mapDispatchToProbs)(CountUI);
+export default CountContainer;
+```
+
+* mapStateToProps:映射狀態，回傳值是一個對象
+
+```js
+function mapStateToProbs(state) {
+    return { count: state.count }
+}
+```
+
+* mapDispatchToProps:映射操作狀態的方法，傳回值是一個對象
+
+```js
+function mapDispatchToProbs(dispatch) {
+    return {
+        add: (data) => dispatch(createIncrementAction(data)),
+        sub: (data) => dispatch(createDecrementAction(data)),
+        async: (data, time) => dispatch(createIncrementAsyncAction(data, time)),
     }
 }
 ```
 
-* 備註：非同步action不是必須要寫的，完全可以自己等待非同步任務的結果了再去分發同步action。
+### 備註1：容器組件中的store是靠props傳進去的，而不是在容器組件中直接引入
+
+```js
+import store from './redux/store'
+
+export default class App extends Component {
+  render() {
+    return (
+      <div>
+        <Count store={store}/>
+      </div>
+    )
+  }
+}
+```
+
+### 備註2：mapDispatchToProps，也可以是一個對象
