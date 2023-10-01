@@ -8,7 +8,8 @@ const store = configureStore({
   reducer: {
     count: countReducer,
     addP:personReducer
-  }
+  },
+  // devTools: true // 啟用 Redux DevTools 擴充
 });
 
 export default store;

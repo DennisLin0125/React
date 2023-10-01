@@ -81,3 +81,9 @@ connect(
 ```
 
 ### 在UI元件中透過this.props.xxxxxxx讀取和操作狀態
+
+## 求和案例_react-redux資料共享版
+
+1. 定義一個Pserson組件，和Count組件透過redux共享資料。
+2. 為Person組件編寫：reducer、action，配置constant常數。
+3. 交給store的是總reducer，最後注意在組件中取出狀態的時候，記得「取到位」。
