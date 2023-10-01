@@ -28,7 +28,7 @@ const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin'
 
 const createEnvironmentHash = require('./webpack/persistentCache/createEnvironmentHash');
 
-// Source maps are resource heavy and can cause out of memory issue for large source files.
+// 來源映射佔用大量資源，可能導致大型來源檔案出現記憶體不足問題.
 const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
 
 const reactRefreshRuntimeEntry = require.resolve('react-refresh/runtime');
@@ -44,8 +44,8 @@ const babelRuntimeRegenerator = require.resolve('@babel/runtime/regenerator', {
   paths: [babelRuntimeEntry],
 });
 
-// Some apps do not need the benefits of saving a web request, so not inlining the chunk
-// makes for a smoother build process.
+// 某些應用程式不需要保存 Web 請求的好處，因此不需要內聯區塊
+// 使建置過程更加順利。
 const shouldInlineRuntimeChunk = process.env.INLINE_RUNTIME_CHUNK !== 'false';
 
 const emitErrorsAsWarnings = process.env.ESLINT_NO_DEV_ERRORS === 'true';
@@ -55,18 +55,18 @@ const imageInlineSizeLimit = parseInt(
   process.env.IMAGE_INLINE_SIZE_LIMIT || '10000'
 );
 
-// Check if TypeScript is setup
+// 檢查 TypeScript 是否已設定
 const useTypeScript = fs.existsSync(paths.appTsConfig);
 
-// Check if Tailwind config exists
+// 檢查 Tailwind 配置是否存在
 const useTailwind = fs.existsSync(
   path.join(paths.appPath, 'tailwind.config.js')
 );
 
-// Get the path to the uncompiled service worker (if it exists).
+// 取得未編譯的 Service Worker 的路徑（如果存在）。
 const swSrc = paths.swSrc;
 
-// style files regexes
+// 樣式文件正規表示式
 const cssRegex = /\.css$/;
 const cssModuleRegex = /\.module\.css$/;
 const sassRegex = /\.(scss|sass)$/;
@@ -85,33 +85,35 @@ const hasJsxRuntime = (() => {
   }
 })();
 
-// This is the production and development configuration.
-// It is focused on developer experience, fast rebuilds, and a minimal bundle.
+/*
+這是生產和開發配置。
+它專注於開發人員體驗、快速重建和最小捆綁。
+ */
 module.exports = function (webpackEnv) {
   const isEnvDevelopment = webpackEnv === 'development';
   const isEnvProduction = webpackEnv === 'production';
 
-  // Variable used for enabling profiling in Production
-  // passed into alias object. Uses a flag if passed into the build command
+  // 用於生產中啟用分析的變數
+  // 傳入別名物件。 如果傳遞到建置命令中則使用標誌
   const isEnvProductionProfile =
     isEnvProduction && process.argv.includes('--profile');
 
-  // We will provide `paths.publicUrlOrPath` to our app
-  // as %PUBLIC_URL% in `index.html` and `process.env.PUBLIC_URL` in JavaScript.
-  // Omit trailing slash as %PUBLIC_URL%/xyz looks better than %PUBLIC_URL%xyz.
-  // Get environment variables to inject into our app.
+  // 我們將為我們的應用程式提供 `paths.publicUrlOrPath`
+   // 在 JavaScript 中作為 `index.html` 和 `process.env.PUBLIC_URL` 中的 %PUBLIC_URL%。
+   // 省略尾部斜杠，因為 %PUBLIC_URL%/xyz 看起來比 %PUBLIC_URL%xyz 更好。
+   // 取得要注入到我們的應用程式中的環境變數。
   const env = getClientEnvironment(paths.publicUrlOrPath.slice(0, -1));
 
   const shouldUseReactRefresh = env.raw.FAST_REFRESH;
 
-  // common function to get style loaders
+  // 取得樣式載入器的常用函數
   const getStyleLoaders = (cssOptions, preProcessor) => {
     const loaders = [
       isEnvDevelopment && require.resolve('style-loader'),
       isEnvProduction && {
         loader: MiniCssExtractPlugin.loader,
-        // css is located in `static/css`, use '../../' to locate index.html folder
-        // in production `paths.publicUrlOrPath` can be a relative path
+        // css位於`static/css`中，使用'../../'定位index.html資料夾
+        // 在生產環境中 `paths.publicUrlOrPath` 可以是相對路徑
         options: paths.publicUrlOrPath.startsWith('.')
           ? { publicPath: '../../' }
           : {},
@@ -121,13 +123,13 @@ module.exports = function (webpackEnv) {
         options: cssOptions,
       },
       {
-        // Options for PostCSS as we reference these options twice
-        // Adds vendor prefixing based on your specified browser support in
-        // package.json
+        // PostCSS 的選項，因為我們兩次引用這些選項
+        // 根據您指定的瀏覽器支援新增供應商前綴
+        // 套件.json
         loader: require.resolve('postcss-loader'),
         options: {
           postcssOptions: {
-            // Necessary for external CSS imports to work
+            // 外部 CSS 導入工作所必需的
             // https://github.com/facebook/create-react-app/issues/2677
             ident: 'postcss',
             config: false,
@@ -143,9 +145,9 @@ module.exports = function (webpackEnv) {
                       stage: 3,
                     },
                   ],
-                  // Adds PostCSS Normalize as the reset css with default options,
-                  // so that it honors browserslist config in package.json
-                  // which in turn let's users customize the target behavior as per their needs.
+                  // 新增 PostCSS Normalize 作為具有預設選項的重置 css，
+                  // 以便它遵循 package.json 中的 browserslist 配置
+                  // 這又讓使用者可以依照自己的需求自訂目標行為。
                   'postcss-normalize',
                 ]
               : [
@@ -188,39 +190,39 @@ module.exports = function (webpackEnv) {
 
   return {
     target: ['browserslist'],
-    // Webpack noise constrained to errors and warnings
+    // Webpack 噪音僅限於錯誤和警告
     stats: 'errors-warnings',
     mode: isEnvProduction ? 'production' : isEnvDevelopment && 'development',
-    // Stop compilation early in production
+    // 在生產早期停止編譯
     bail: isEnvProduction,
     devtool: isEnvProduction
       ? shouldUseSourceMap
         ? 'source-map'
         : false
       : isEnvDevelopment && 'cheap-module-source-map',
-    // These are the "entry points" to our application.
-    // This means they will be the "root" imports that are included in JS bundle.
+    // 這些是我們應用程式的「入口點」。
+    // 這表示它們將是包含在 JS 包中的「根」導入。
     entry: paths.appIndexJs,
     output: {
-      // The build folder.
+      // 建置資料夾。
       path: paths.appBuild,
-      // Add /* filename */ comments to generated require()s in the output.
+      // 將 /* filename */ 註解加入輸出中產生的 require() 中。
       pathinfo: isEnvDevelopment,
-      // There will be one main bundle, and one file per asynchronous chunk.
-      // In development, it does not produce real files.
+      // 將有一個主包，每個非同步區塊一個檔案。
+      // 在開發中，它不會產生真實的檔案。
       filename: isEnvProduction
         ? 'static/js/[name].[contenthash:8].js'
         : isEnvDevelopment && 'static/js/bundle.js',
-      // There are also additional JS chunk files if you use code splitting.
+      // 如果您使用程式碼分割，這裡還有額外的 JS 區塊檔案。
       chunkFilename: isEnvProduction
         ? 'static/js/[name].[contenthash:8].chunk.js'
         : isEnvDevelopment && 'static/js/[name].chunk.js',
       assetModuleFilename: 'static/media/[name].[hash][ext]',
-      // webpack uses `publicPath` to determine where the app is being served from.
-      // It requires a trailing slash, or the file assets will get an incorrect path.
-      // We inferred the "public path" (such as / or /my-project) from homepage.
+      // webpack 使用「publicPath」來決定應用程式的服務位置。
+      // 它需要尾部斜杠，否則檔案資產將獲得錯誤的路徑。
+      // 我們從主頁推斷「公共路徑」（例如 / 或 /my-project）。
       publicPath: paths.publicUrlOrPath,
-      // Point sourcemap entries to original disk location (format as URL on Windows)
+      // 將來源對應項目指向原始磁碟位置（在 Windows 上格式為 URL）
       devtoolModuleFilenameTemplate: isEnvProduction
         ? info =>
             path
@@ -248,72 +250,72 @@ module.exports = function (webpackEnv) {
     optimization: {
       minimize: isEnvProduction,
       minimizer: [
-        // This is only used in production mode
+        // 這僅用於生產模式
         new TerserPlugin({
           terserOptions: {
             parse: {
-              // We want terser to parse ecma 8 code. However, we don't want it
-              // to apply any minification steps that turns valid ecma 5 code
-              // into invalid ecma 5 code. This is why the 'compress' and 'output'
-              // sections only apply transformations that are ecma 5 safe
+              // 我們希望 terser 能夠解析 ecma 8 程式碼。 然而，我們不想要它
+              // 應用任何可轉換為有效 ecma 5 程式碼的縮小步驟
+              // 進入無效的 ECMA 5 碼。 這就是為什麼“壓縮”和“輸出”
+              // 部分僅套用 ecma 5 安全的轉換
               // https://github.com/facebook/create-react-app/pull/4234
               ecma: 8,
             },
             compress: {
               ecma: 5,
               warnings: false,
-              // Disabled because of an issue with Uglify breaking seemingly valid code:
+              // 由於 Uglify 的問題破壞了看似有效的程式碼而被停用：
               // https://github.com/facebook/create-react-app/issues/2376
-              // Pending further investigation:
+              // 等待進一步調查：
               // https://github.com/mishoo/UglifyJS2/issues/2011
               comparisons: false,
-              // Disabled because of an issue with Terser breaking valid code:
+              // 由於 Terser 破壞有效程式碼的問題而被停用：
               // https://github.com/facebook/create-react-app/issues/5250
-              // Pending further investigation:
+              // P結束進一步調查：
               // https://github.com/terser-js/terser/issues/120
               inline: 2,
             },
             mangle: {
               safari10: true,
             },
-            // Added for profiling in devtools
+            // 添加用於在開發工具中進行分析
             keep_classnames: isEnvProductionProfile,
             keep_fnames: isEnvProductionProfile,
             output: {
               ecma: 5,
               comments: false,
-              // Turned on because emoji and regex is not minified properly using default
+              // 啟用是因為表情符號和正規表示式未使用預設值正確縮小
               // https://github.com/facebook/create-react-app/issues/2488
               ascii_only: true,
             },
           },
         }),
-        // This is only used in production mode
+        // 這僅用於生產模式
         new CssMinimizerPlugin(),
       ],
     },
     resolve: {
-      // This allows you to set a fallback for where webpack should look for modules.
-      // We placed these paths second because we want `node_modules` to "win"
-      // if there are any conflicts. This matches Node resolution mechanism.
+      // 這允許您設定 webpack 應該在哪裡尋找模組的後備。
+      // 我們將這些路徑放在第二位，因為我們希望“node_modules”“獲勝”
+      // 如果有任何衝突。 這與Node解析機制相符。
       // https://github.com/facebook/create-react-app/issues/253
       modules: ['node_modules', paths.appNodeModules].concat(
         modules.additionalModulePaths || []
       ),
-      // These are the reasonable defaults supported by the Node ecosystem.
-      // We also include JSX as a common component filename extension to support
-      // some tools, although we do not recommend using it, see:
+      // 這些是 Node 生態系支援的合理預設值。
+      // 我們也包含 JSX 作為通用元件檔案副檔名以支援
+      // 一些工具，雖然我們不建議使用，請參見：
       // https://github.com/facebook/create-react-app/issues/290
-      // `web` extension prefixes have been added for better support
-      // for React Native Web.
+      // 添加了 `web` 擴展前綴以獲得更好的支持
+      // 對於 React Native Web。
       extensions: paths.moduleFileExtensions
         .map(ext => `.${ext}`)
         .filter(ext => useTypeScript || !ext.includes('ts')),
       alias: {
-        // Support React Native Web
+        // 支援 React Native Web
         // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
         'react-native': 'react-native-web',
-        // Allows for better profiling with ReactDevTools
+        // 允許使用 React DevTools 進行更好的分析
         ...(isEnvProductionProfile && {
           'react-dom$': 'react-dom/profiling',
           'scheduler/tracing': 'scheduler/tracing-profiling',
@@ -321,11 +323,11 @@ module.exports = function (webpackEnv) {
         ...(modules.webpackAliases || {}),
       },
       plugins: [
-        // Prevents users from importing files from outside of src/ (or node_modules/).
-        // This often causes confusion because we only process files within src/ with babel.
-        // To fix this, we prevent you from importing files out of src/ -- if you'd like to,
-        // please link the files into your node_modules/ and let module-resolution kick in.
-        // Make sure your source files are compiled, as they will not be processed in any way.
+        // 阻止使用者從 src/（或 node_modules/）外部匯入檔案。
+        // 這經常會造成混亂，因為我們只使用 babel 來處理 src/ 中的檔案。
+        // 為了解決這個問題，我們阻止您從 src/ 匯入檔案—如果您願意的話，
+        // 請將檔案連結到您的node_modules/並讓模組解析生效。
+        // 確保您的原始檔案已編譯，因為它們不會以任何方式處理。
         new ModuleScopePlugin(paths.appSrc, [
           paths.appPackageJson,
           reactRefreshRuntimeEntry,
@@ -339,7 +341,7 @@ module.exports = function (webpackEnv) {
     module: {
       strictExportPresence: true,
       rules: [
-        // Handle node_modules packages that contain sourcemaps
+        // 處理包含來源映射的node_modules包
         shouldUseSourceMap && {
           enforce: 'pre',
           exclude: /@babel(?:\/|\\{1,2})runtime/,
@@ -347,11 +349,11 @@ module.exports = function (webpackEnv) {
           loader: require.resolve('source-map-loader'),
         },
         {
-          // "oneOf" will traverse all following loaders until one will
-          // match the requirements. When no loader matches it will fall
-          // back to the "file" loader at the end of the loader list.
+          // “oneOf”將遍歷所有後續載入器，直到有一個載入器
+          // 符合要求。 當沒有裝載機匹配時它就會掉落
+          // 返回載入器清單末端的「檔案」載入器。
           oneOf: [
-            // TODO: Merge this config once `image/avif` is in the mime-db
+            // TODO: 一旦 `image/avif` 位於 mime-db 中，就合併此配置
             // https://github.com/jshttp/mime-db
             {
               test: [/\.avif$/],
@@ -363,9 +365,9 @@ module.exports = function (webpackEnv) {
                 },
               },
             },
-            // "url" loader works like "file" loader except that it embeds assets
-            // smaller than specified limit in bytes as data URLs to avoid requests.
-            // A missing `test` is equivalent to a match.
+            //“url”載入器的工作方式類似於“file”載入器，只是它嵌入了資產
+            // 小於作為資料 URL 指定的位元組限制，以避免請求。
+            // 缺少 `test` 相當於符合。
             {
               test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
               type: 'asset',
@@ -401,8 +403,8 @@ module.exports = function (webpackEnv) {
                 and: [/\.(ts|tsx|js|jsx|md|mdx)$/],
               },
             },
-            // Process application JS with Babel.
-            // The preset includes JSX, Flow, TypeScript, and some ESnext features.
+            // 使用 Babel 處理應用程式 JS。
+            // 預設包含 JSX、Flow、TypeScript 和一些 ESnext 功能。
             {
               test: /\.(js|mjs|jsx|ts|tsx)$/,
               include: paths.appSrc,
@@ -425,17 +427,17 @@ module.exports = function (webpackEnv) {
                     shouldUseReactRefresh &&
                     require.resolve('react-refresh/babel'),
                 ].filter(Boolean),
-                // This is a feature of `babel-loader` for webpack (not Babel itself).
-                // It enables caching results in ./node_modules/.cache/babel-loader/
-                // directory for faster rebuilds.
+                // 這是 webpack 的 `babel-loader` 的特性（不是 Babel 本身）。
+                // 它啟用在 ./node_modules/.cache/babel-loader/ 中快取結果
+                // 用於更快重建的目錄。
                 cacheDirectory: true,
-                // See #6846 for context on why cacheCompression is disabled
+                // 有關為什麼要停用快取壓縮的上下文，請參閱#6846
                 cacheCompression: false,
                 compact: isEnvProduction,
               },
             },
-            // Process any JS outside of the app with Babel.
-            // Unlike the application JS, we only compile the standard ES features.
+            // 使用 Babel 處理應用程式外部的任何 JS。
+            // 與應用程式 JS 不同，我們只編譯標準 ES 功能。
             {
               test: /\.(js|mjs)$/,
               exclude: /@babel(?:\/|\\{1,2})runtime/,
@@ -451,23 +453,23 @@ module.exports = function (webpackEnv) {
                   ],
                 ],
                 cacheDirectory: true,
-                // See #6846 for context on why cacheCompression is disabled
+                // 有關停用快取壓縮的原因，請參閱#6846
                 cacheCompression: false,
                 
-                // Babel sourcemaps are needed for debugging into node_modules
-                // code.  Without the options below, debuggers like VSCode
-                // show incorrect code and set breakpoints on the wrong lines.
+                // 偵錯 node_modules 需要 Babel 來源映射
+                // 程式碼。 如果沒有以下選項，VSCode 等調試器
+                // 顯示不正確的程式碼並在錯誤的行上設定斷點。
                 sourceMaps: shouldUseSourceMap,
                 inputSourceMap: shouldUseSourceMap,
               },
             },
-            // "postcss" loader applies autoprefixer to our CSS.
-            // "css" loader resolves paths in CSS and adds assets as dependencies.
-            // "style" loader turns CSS into JS modules that inject <style> tags.
-            // In production, we use MiniCSSExtractPlugin to extract that CSS
-            // to a file, but in development "style" loader enables hot editing
-            // of CSS.
-            // By default we support CSS Modules with the extension .module.css
+            // “postcss”載入器將 autoprefixer 套用到我們的 CSS。
+            // “css”載入器解析 CSS 中的路徑並將資源新增為依賴項。
+            // “style”載入器將 CSS 轉換為注入 <style> 標籤的 JS 模組。
+            // 在生產中，我們使用 MiniCSSExtractPlugin 來擷取 CSS
+            // 到一個文件，但在開發中「樣式」載入器啟用熱編輯
+            // CSS 的。
+            // 預設情況下，我們支援擴展名為 .module.css 的 CSS 模組
             {
               test: cssRegex,
               exclude: cssModuleRegex,
@@ -480,14 +482,14 @@ module.exports = function (webpackEnv) {
                   mode: 'icss',
                 },
               }),
-              // Don't consider CSS imports dead code even if the
-              // containing package claims to have no side effects.
-              // Remove this when webpack adds a warning or an error for this.
-              // See https://github.com/webpack/webpack/issues/6571
+              // 不要認為 CSS 導入了死代碼，即使
+              // 包含聲稱沒有副作用的套件。
+              // 當 webpack 新增警告或錯誤時刪除它。
+              // 請參閱 https://github.com/webpack/webpack/issues/6571
               sideEffects: true,
             },
-            // Adds support for CSS Modules (https://github.com/css-modules/css-modules)
-            // using the extension .module.css
+            // 新增 CSS 模組的支援 (https://github.com/css-modules/css-modules)
+            // 使用副檔名.module.css
             {
               test: cssModuleRegex,
               use: getStyleLoaders({
@@ -501,9 +503,9 @@ module.exports = function (webpackEnv) {
                 },
               }),
             },
-            // Opt-in support for SASS (using .scss or .sass extensions).
-            // By default we support SASS Modules with the
-            // extensions .module.scss or .module.sass
+            // 選擇支援 SASS（使用 .scss 或 .sass 副檔名）。
+            // 預設情況下，我們支援 SASS 模組
+            // 副檔名 .module.scss 或 .module.sass
             {
               test: sassRegex,
               exclude: sassModuleRegex,
@@ -519,14 +521,14 @@ module.exports = function (webpackEnv) {
                 },
                 'sass-loader'
               ),
-              // Don't consider CSS imports dead code even if the
-              // containing package claims to have no side effects.
-              // Remove this when webpack adds a warning or an error for this.
-              // See https://github.com/webpack/webpack/issues/6571
+              // 不要認為 CSS 導入了死代碼，即使
+              // 包含聲稱沒有副作用的套件。
+              // 當 webpack 新增警告或錯誤時刪除它。
+              // 請參閱 https://github.com/webpack/webpack/issues/6571
               sideEffects: true,
             },
-            // Adds support for CSS Modules, but using SASS
-            // using the extension .module.scss or .module.sass
+            // 新增對 CSS 模組的支持，但使用 SASS
+            // 使用副檔名 .module.scss 或 .module.sass
             {
               test: sassModuleRegex,
               use: getStyleLoaders(
@@ -543,27 +545,27 @@ module.exports = function (webpackEnv) {
                 'sass-loader'
               ),
             },
-            // "file" loader makes sure those assets get served by WebpackDevServer.
-            // When you `import` an asset, you get its (virtual) filename.
-            // In production, they would get copied to the `build` folder.
-            // This loader doesn't use a "test" so it will catch all modules
-            // that fall through the other loaders.
+            // 「檔案」載入器確保這些資源由 WebpackDevServer 提供服務。
+            // 當您「匯入」資產時，您將獲得其（虛擬）檔案名稱。
+            // 在生產中，它們將被複製到「build」資料夾中。
+            // 該載入器不使用“測試”，因此它將捕獲所有模組
+            // 透過其他載入器。
             {
-              // Exclude `js` files to keep "css" loader working as it injects
-              // its runtime that would otherwise be processed through "file" loader.
-              // Also exclude `html` and `json` extensions so they get processed
-              // by webpacks internal loaders.
+              // 排除 `js` 檔案以保持「css」載入器在註入時正常運作
+              // 它的運行時否則將透過「檔案」載入器處理。
+              // 也要排除 `html` 和 `json` 副檔名，以便它們被處理
+              // 透過 webpacks 內部載入器。
               exclude: [/^$/, /\.(js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/],
               type: 'asset/resource',
             },
-            // ** STOP ** Are you adding a new loader?
-            // Make sure to add the new loader(s) before the "file" loader.
+            // ** 停止 ** 您是否要新增新的載入程式？
+            // 確保在「檔案」載入器之前新增載入器。
           ],
         },
       ].filter(Boolean),
     },
     plugins: [
-      // Generates an `index.html` file with the <script> injected.
+      // 產生一個包含 <script> 注入的 `index.html` 檔案。
       new HtmlWebpackPlugin(
         Object.assign(
           {},
@@ -589,51 +591,51 @@ module.exports = function (webpackEnv) {
             : undefined
         )
       ),
-      // Inlines the webpack runtime script. This script is too small to warrant
-      // a network request.
+      // 內嵌 webpack 執行階段腳本。 這個腳本太小了，無法保證
+      // 網路請求。
       // https://github.com/facebook/create-react-app/issues/5358
       isEnvProduction &&
         shouldInlineRuntimeChunk &&
         new InlineChunkHtmlPlugin(HtmlWebpackPlugin, [/runtime-.+[.]js/]),
-      // Makes some environment variables available in index.html.
-      // The public URL is available as %PUBLIC_URL% in index.html, e.g.:
+      // 使一些環境變數在index.html 中可用。
+      // 公用 URL 在 index.html 中以 %PUBLIC_URL% 形式提供，例如：
       // <link rel="icon" href="%PUBLIC_URL%/favicon.ico">
-      // It will be an empty string unless you specify "homepage"
-      // in `package.json`, in which case it will be the pathname of that URL.
+      // 除非您指定“homepage”，否則它將是一個空字串
+      // 在 `package.json` 中，在這種情況下它將是該 URL 的路徑名稱。
       new InterpolateHtmlPlugin(HtmlWebpackPlugin, env.raw),
-      // This gives some necessary context to module not found errors, such as
-      // the requesting resource.
+      // 這為模組未找到錯誤提供了一些必要的上下文，例如
+      // 請求的資源。
       new ModuleNotFoundPlugin(paths.appPath),
-      // Makes some environment variables available to the JS code, for example:
-      // if (process.env.NODE_ENV === 'production') { ... }. See `./env.js`.
-      // It is absolutely essential that NODE_ENV is set to production
-      // during a production build.
-      // Otherwise React will be compiled in the very slow development mode.
+      // 使一些環境變數可供 JS 程式碼使用，例如：
+      // if (process.env.NODE_ENV === '生產') { ... }. 請參閱“./env.js”。
+      // 將 NODE_ENV 設定為生產環境是絕對必要的
+      // 在生產建置期間。
+      // 否則React將會在非常慢的開發模式下編譯。
       new webpack.DefinePlugin(env.stringified),
-      // Experimental hot reloading for React .
+      // React 的實驗性熱重載。
       // https://github.com/facebook/react/tree/main/packages/react-refresh
       isEnvDevelopment &&
         shouldUseReactRefresh &&
         new ReactRefreshWebpackPlugin({
           overlay: false,
         }),
-      // Watcher doesn't work well if you mistype casing in a path so we use
-      // a plugin that prints an error when you attempt to do this.
-      // See https://github.com/facebook/create-react-app/issues/240
+      // 如果你在路徑中輸錯了大小寫，那麼 Watcher 就無法正常運作，所以我們使用
+      // 當您嘗試執行此操作時會列印錯誤的插件。
+      // 請參閱 https://github.com/facebook/create-react-app/issues/240
       isEnvDevelopment && new CaseSensitivePathsPlugin(),
       isEnvProduction &&
         new MiniCssExtractPlugin({
-          // Options similar to the same options in webpackOptions.output
-          // both options are optional
+          // 與 webpackOptions.output 相同選項類似的選項
+          // 兩個選項都是可選的
           filename: 'static/css/[name].[contenthash:8].css',
           chunkFilename: 'static/css/[name].[contenthash:8].chunk.css',
         }),
-      // Generate an asset manifest file with the following content:
-      // - "files" key: Mapping of all asset filenames to their corresponding
-      //   output file so that tools can pick it up without having to parse
-      //   `index.html`
-      // - "entrypoints" key: Array of files which are included in `index.html`,
-      //   can be used to reconstruct the HTML if necessary
+      // 產生資產清單文件，內容如下：
+      // - “files”鍵：將所有資源檔案名稱對應到其對應的
+      // 輸出文件，以便工具無需解析即可取得它
+      // `index.html`
+      // - “entrypoints”鍵：包含在 `index.html` 中的檔案數組，
+      // 如果需要的話可以用來重建 HTML
       new WebpackManifestPlugin({
         fileName: 'asset-manifest.json',
         publicPath: paths.publicUrlOrPath,
@@ -652,26 +654,26 @@ module.exports = function (webpackEnv) {
           };
         },
       }),
-      // Moment.js is an extremely popular library that bundles large locale files
-      // by default due to how webpack interprets its code. This is a practical
-      // solution that requires the user to opt into importing specific locales.
+      // Moment.js 是一個非常流行的函式庫，它捆綁了大型語言環境文件
+      // 預設情況下，由於 webpack 解釋其程式碼的方式。 這是一個實用的
+      // 要求使用者選擇匯入特定區域設定的解決方案。
       // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
-      // You can remove this if you don't use Moment.js:
+      // 如果你不使用 Moment.js，你可以刪除它：
       new webpack.IgnorePlugin({
         resourceRegExp: /^\.\/locale$/,
         contextRegExp: /moment$/,
       }),
-      // Generate a service worker script that will precache, and keep up to date,
-      // the HTML & assets that are part of the webpack build.
+      // 產生一個服務工作執行緒腳本，該腳本將預先快取並保持最新，
+      // 作為 webpack 建構一部分的 HTML 和資源。
       isEnvProduction &&
         fs.existsSync(swSrc) &&
         new WorkboxWebpackPlugin.InjectManifest({
           swSrc,
           dontCacheBustURLsMatching: /\.[0-9a-f]{8}\./,
           exclude: [/\.map$/, /asset-manifest\.json$/, /LICENSE/],
-          // Bump up the default maximum size (2mb) that's precached,
-          // to make lazy-loading failure scenarios less likely.
-          // See https://github.com/cra-template/pwa/issues/13#issuecomment-722667270
+          // 增加預先快取的預設最大大小 (2mb)，
+          // 減少延遲載入失敗的可能性。
+          // 請參閱 https://github.com/cra-template/pwa/issues/13#issuecomment-722667270
           maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         }),
       // TypeScript type checking
@@ -703,10 +705,10 @@ module.exports = function (webpackEnv) {
             // profile: true,
           },
           issue: {
-            // This one is specifically to match during CI tests,
-            // as micromatch doesn't match
+            // 這個是專門為了在 CI 測試期間匹配的，
+            // 因為微匹配不匹配
             // '../cra-template-typescript/template/src/App.tsx'
-            // otherwise.
+            // 否則。
             include: [
               { file: '../**/src/**/*.{ts,tsx}' },
               { file: '**/src/**/*.{ts,tsx}' },
@@ -748,8 +750,8 @@ module.exports = function (webpackEnv) {
           },
         }),
     ].filter(Boolean),
-    // Turn off performance processing because we utilize
-    // our own hints via the FileSizeReporter
+    // 關閉效能處理，因為我們利用
+    // 我們自己透過 FileSizeReporter 給出的提示
     performance: false,
   };
 };
