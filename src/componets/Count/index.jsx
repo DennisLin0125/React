@@ -1,61 +1,36 @@
 import React, { Component } from 'react'
-import store from '../../redux/store'
 
-// 引入action
-import {
-    createIncrementAction,
-    createDecrementAction,
-    createIncrementAsyncAction
-} from '../../redux/count_action'
+
 
 export default class Count extends Component {
 
     state = { carName: "BMW" }
 
-    // componentDidMount() {
-    //     // 監測redux中的狀態變化,只要變化,就調用render
-    //     store.subscribe(() => {
-    //         this.setState({});
-    //     })
-    // }
-
     // 加法
     increment = () => {
         // 獲取用戶輸入
         const { value } = this.selectNumber;
-        store.dispatch(createIncrementAction(value * 1))
     }
     // 減法
     decrement = () => {
         // 獲取用戶輸入
         const { value } = this.selectNumber;
-        store.dispatch(createDecrementAction(value * 1))
     }
     // 當前求和為奇數再加
     incrementIfOdd = () => {
         // 獲取用戶輸入
         const { value } = this.selectNumber;
-
-        if (store.getState().count % 2 === 1) {
-            // *1 為了強制將字串轉數字
-            store.dispatch(createIncrementAction(value * 1))
-        }
     }
     // 異步加
     incrementAsync = () => {
         // 獲取用戶輸入
         const { value } = this.selectNumber;
-        // setTimeout(() => {
-        //     // *1 為了強制將字串轉數字
-        //     store.dispatch(createIncrementAction(value * 1))
-        // }, 500);
-        store.dispatch(createIncrementAsyncAction(value * 1, 500))
 
     }
     render() {
         return (
             <div>
-                <h1>當前求和為: {store.getState().count}</h1>
+                <h1>當前求和為: {}</h1>
                 <select ref={c => this.selectNumber = c}>
                     <option value="1">1</option>
                     <option value="2">2</option>
