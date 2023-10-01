@@ -10,16 +10,15 @@ import {
 } from '../../redux/count_action'
 
 // mapStateToProbs函數的返回值作為狀態值傳給了UI組件
-function mapStateToProbs(state) {
-    return { count: state.count }
-}
-function mapDispatchToProbs(dispatch) {
-    return {
+const mapStateToProbs = (state) => ({ count: state.count })
+
+const mapDispatchToProbs = (dispatch) => (
+    {
         add: (data) => dispatch(createIncrementAction(data)),
         sub: (data) => dispatch(createDecrementAction(data)),
         async: (data, time) => dispatch(createIncrementAsyncAction(data, time)),
     }
-}
+)
 
 const CountContainer = connect(mapStateToProbs, mapDispatchToProbs)(CountUI);
 
