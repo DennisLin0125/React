@@ -7,9 +7,14 @@
 
 ## 如何建立一個容器元件 —— 靠react-redux 的 connect函數
 
-* connect(mapStateToProps,mapDispatchToProps)(UI元件)
+* connect(`mapStateToProps`,`mapDispatchToProps`)(UI元件)
 
 ```js
+// 引入connect
+import { connect } from 'react-redux'
+
+import CountUI from '../../componets/Count'
+
 const CountContainer = connect(mapStateToProbs, mapDispatchToProbs)(CountUI);
 export default CountContainer;
 ```
@@ -25,6 +30,12 @@ function mapStateToProbs(state) {
 * mapDispatchToProps:映射操作狀態的方法，傳回值是一個對象
 
 ```js
+import {
+    createIncrementAction,
+    createDecrementAction,
+    createIncrementAsyncAction
+} from '../../redux/count_action'
+
 function mapDispatchToProbs(dispatch) {
     return {
         add: (data) => dispatch(createIncrementAction(data)),
